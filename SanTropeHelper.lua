@@ -66,7 +66,6 @@ local select = 1
 local dlstatus = require('moonloader').download_status
 
 update_state = false
-update_found = false
 
 local script_vers = 2
 local script_vers_text = 2.00
@@ -74,7 +73,7 @@ local script_vers_text = 2.00
 local update_url = 'https://raw.githubusercontent.com/xarlamovl/scripts/main/update.ini'
 local update_path = getWorkingDirectory() .. "/update.ini"
 
-local script_url = 'https://github.com/xarlamovl/scripts/blob/main/SanTropeHelper.luac?raw=true'
+local script_url = 'https://raw.githubusercontent.com/xarlamovl/scripts/main/SanTropeHelper.lua'
 local script_path = thisScript().path
 
 local tag = '{00FFFF}[SanTrope Helper]: {FFFFFF}'
@@ -86,7 +85,7 @@ function check_update() -- Создаём функцию которая буде
             updateIni = inicfg.load(nil, update_path)
             if tonumber(updateIni.info.vers) > script_vers then -- Сверяем версию в скрипте и в ini файле на github
                 sampAddChatMessage(tag.."Имеется {32CD32}новая {FFFFFF}версия скрипта. Версия: {32CD32}"..updateIni.info.vers_text, -1) -- Сообщаем о новой версии.
-                update_found = true -- если обновление найдено, ставим переменной значение true
+                update_state = true -- если обновление найдено, ставим переменной значение true
             end
             os.remove(update_path)
         end
@@ -110,14 +109,6 @@ function main()
     BindSbiv = rkeys.registerHotKey(SbivAnimKey.v, true, sbivFunc)
 	
 	check_update()
-	
-	if update_found then -- Если найдено обновление, регистрируем команду /update.
-        sampRegisterChatCommand('update' function()  -- Если пользователь напишет команду, начнётся обновление.
-            update_state = true -- Если человек пропишет /update, скрипт обновится.
-        end)
-    else
-        sampAddChatMessage('{FFFFFF}Нету доступных обновлений!')
-    end
 	
     while true do wait(0)
 	
