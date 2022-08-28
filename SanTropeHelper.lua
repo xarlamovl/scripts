@@ -118,7 +118,6 @@ function main()
                     sampAddChatMessage(tag.."Скрипт {32CD32}успешно {FFFFFF}обновлён.", -1)
                 end
             end)
-            break
         end
 	
 		if delgovna.v then
