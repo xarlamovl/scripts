@@ -1,6 +1,6 @@
 script_name('SanTropeHelper')
 script_author('Xarlamov')
-script_version('1.01')
+script_version('2.00')
 
 require 'lib.sampfuncs'
 require "lib.moonloader"
@@ -44,7 +44,7 @@ dflood = imgui.ImBool(mainIni.settings.state_dflood)
 scho = imgui.ImBool(mainIni.settings.state_scho)
 delgovna = imgui.ImBool(mainIni.settings.state_delgovna)
 local style_selected = imgui.ImInt(mainIni.settings.style)
-local style_list = {u8"Ò¸ìíî-Îðàíæåâàÿ", u8"Ñèíÿÿ", u8"Ò¸ìíàÿ", u8"Âèøí¸âàÿ", u8"Ò¸ìíî-çåë¸íàÿ", u8"Êðàñíàÿ", u8"Ôèîëåòîâàÿ"}
+local style_list = {u8"Тёмно-Оранжевая", u8"Синяя", u8"Тёмная", u8"Вишнёвая", u8"Тёмно-зелёная", u8"Красная", u8"Фиолетовая"}
 local rkeys = require 'rkeys'
 imgui.HotKey = require('imgui_addons').HotKey
 imgui.ToggleButton = require('imgui_addons').ToggleButton
@@ -62,30 +62,31 @@ local SbivAnimKey = {
 main_window_state = imgui.ImBool(false)
 local select = 1
 
--- àâòî îáíîâà
+-- авто обнова
 local dlstatus = require('moonloader').download_status
 
 update_state = false
+update_found = false
 
 local script_vers = 2
-local script_vers_text = 1.01
+local script_vers_text = 2.00
 
 local update_url = 'https://raw.githubusercontent.com/xarlamovl/scripts/main/update.ini'
 local update_path = getWorkingDirectory() .. "/update.ini"
 
-local script_url = 'https://raw.githubusercontent.com/xarlamovl/scripts/main/SanTropeHelper.lua'
+local script_url = 'https://github.com/xarlamovl/scripts/blob/main/SanTropeHelper.luac?raw=true'
 local script_path = thisScript().path
 
 local tag = '{00FFFF}[SanTrope Helper]: {FFFFFF}'
 
 
-function check_update() -- Ñîçäà¸ì ôóíêöèþ êîòîðàÿ áóäåò ïðîâåðÿòü íàëè÷èå îáíîâëåíèé ïðè çàïóñêå ñêðèïòà.
+function check_update() -- Создаём функцию которая будет проверять наличие обновлений при запуске скрипта.
     downloadUrlToFile(update_url, update_path, function(id, status)
         if status == dlstatus.STATUS_ENDDOWNLOADDATA then
             updateIni = inicfg.load(nil, update_path)
-            if tonumber(updateIni.info.vers) > script_vers then -- Ñâåðÿåì âåðñèþ â ñêðèïòå è â ini ôàéëå íà github
-                sampAddChatMessage(tag.."Èìååòñÿ {32CD32}íîâàÿ {FFFFFF}âåðñèÿ ñêðèïòà. Âåðñèÿ: {32CD32}"..updateIni.info.vers_text, -1) -- Ñîîáùàåì î íîâîé âåðñèè.
-                update_state = true -- åñëè îáíîâëåíèå íàéäåíî, ñòàâèì ïåðåìåííîé çíà÷åíèå true
+            if tonumber(updateIni.info.vers) > script_vers then -- Сверяем версию в скрипте и в ini файле на github
+                sampAddChatMessage(tag.."Имеется {32CD32}новая {FFFFFF}версия скрипта. Версия: {32CD32}"..updateIni.info.vers_text, -1) -- Сообщаем о новой версии.
+                update_found = true -- если обновление найдено, ставим переменной значение true
             end
             os.remove(update_path)
         end
@@ -95,7 +96,7 @@ end
 function main()
     if not isSampLoaded() or not isSampfuncsLoaded() then return end
     while not isSampAvailable() do wait(100) end
-	sampAddChatMessage(tag..'Çàãðóæåí! Âåðñèÿ: '..thisScript().version..'. Îòêðûòü ìåíþ: /'..mainIni.settings.settings_command, -1)
+	sampAddChatMessage(tag..'Загружен! Версия: '..thisScript().version..'. Открыть меню: /'..mainIni.settings.settings_command, -1)
     sampRegisterChatCommand(mainIni.settings.settings_command, cmd_sth)
 	
     _, id = sampGetPlayerIdByCharHandle(PLAYER_PED)
@@ -110,12 +111,20 @@ function main()
 	
 	check_update()
 	
+	if update_found then -- Если найдено обновление, регистрируем команду /update.
+        sampRegisterChatCommand('update' function()  -- Если пользователь напишет команду, начнётся обновление.
+            update_state = true -- Если человек пропишет /update, скрипт обновится.
+        end)
+    else
+        sampAddChatMessage('{FFFFFF}Нету доступных обновлений!')
+    end
+	
     while true do wait(0)
 	
 		if update_state then
             downloadUrlToFile(script_url, script_path, function(id, status)
                 if status == dlstatus.STATUS_ENDDOWNLOADDATA then
-                    sampAddChatMessage(tag.."Ñêðèïò {32CD32}óñïåøíî {FFFFFF}îáíîâë¸í.", -1)
+                    sampAddChatMessage(tag.."Скрипт {32CD32}успешно {FFFFFF}обновлён.", -1)
                 end
             end)
             break
@@ -180,16 +189,16 @@ function imgui.OnDrawFrame()
 		
         imgui.Begin('SanTrope Helper', main_window_state, imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
 		
-		imgui.Text(u8(string.format('Òåêóùàÿ äàòà: %s.', os.date())))
-		imgui.Text(u8'Òâîé íèê: '..nick..'['..id..'].')
+		imgui.Text(u8(string.format('Текущая дата: %s.', os.date())))
+		imgui.Text(u8'Твой ник: '..nick..'['..id..'].')
 		imgui.SameLine()
-		imgui.Text(u8'Òâîè êîîðäèíàòû: X: '..math.floor(x)..' | Y: '..math.floor(y)..' | Z: '..math.floor(z))
+		imgui.Text(u8'Твои координаты: X: '..math.floor(x)..' | Y: '..math.floor(y)..' | Z: '..math.floor(z))
 		
 		imgui.BeginChild('##1', imgui.ImVec2(150,45), true)
-            if imgui.Selectable(u8"Ìåíþ") then
+            if imgui.Selectable(u8"Меню") then
                 select = 1
             end
-            if imgui.Selectable(u8"Íàñòðîéêè") then
+            if imgui.Selectable(u8"Настройки") then
                 select = 2 
             end   
        
@@ -199,9 +208,9 @@ function imgui.OnDrawFrame()
 			imgui.BeginChild('##2', imgui.ImVec2(-1, -1), true)
 			
 				if select == 1 then
-					imgui.Text(u8'Ìåíþ')
+					imgui.Text(u8'Меню')
 				elseif select == 2 then
-					imgui.Text(u8'Íàñòðîéêè')
+					imgui.Text(u8'Настройки')
 				end
 				
 				imgui.Separator()
@@ -210,78 +219,78 @@ function imgui.OnDrawFrame()
 				
 					if imgui.ToggleButton(u8'##LOCK_KEY', lock) then end
 						imgui.SameLine()
-						imgui.Text(u8'Çàêðûâàòü ò/ñ íà')
+						imgui.Text(u8'Закрывать т/с на')
 						imgui.SetCursorPos(imgui.ImVec2(126, 30))
 
 							if imgui.HotKey("##LOCK", LockKey, tLastKeys, 30) then
 								rkeys.changeHotKey(BindLock, LockKey.v)
 							end
 						imgui.SameLine()
-						imgui.TextQuestion('Îòêðûâàåò/Çàêðûâàåò ëè÷íûé ò/ñ')
+						imgui.TextQuestion('Открывает/Закрывает личный т/с')
 					
 					if imgui.ToggleButton("##SBIV_ANIM_KEY", sbiv) then end
 						imgui.SameLine()
-						imgui.Text(u8"Ñáèâ àíèìàöèè íà")
+						imgui.Text(u8"Сбив анимации на")
 						imgui.SetCursorPos(imgui.ImVec2(147, 50))
 						
 							if imgui.HotKey("##SBIV_ANIM", SbivAnimKey, tLastKeys, 30) then
 								rkeys.changeHotKey(BindSbiv, SbivAnimKey.v)
 							end
 						imgui.SameLine()
-						imgui.TextQuestion('Ñáèâ àíèìàöèè ÷åðåç /anim 3')
+						imgui.TextQuestion('Сбив анимации через /anim 3')
 					
 					if imgui.ToggleButton('##REPCAR', repcar) then end
 						imgui.SameLine()
-						imgui.Text(u8'Ïî÷èíèòü ò/ñ (/rc)')
+						imgui.Text(u8'Починить т/с (/rc)')
 						imgui.SameLine()
-						imgui.TextQuestion("Ñîêðàùåíèå êîìàíäû /repairkit")
+						imgui.TextQuestion("Сокращение команды /repairkit")
 						
 					if imgui.ToggleButton('##USEDRUG', usedrug) then end
 						imgui.SameLine()
-						imgui.Text(u8'Ïðèíÿòèå íàðêîòèêîâ (/us [1-7])')
+						imgui.Text(u8'Принятие наркотиков (/us [1-7])')
 						imgui.SameLine()
-						imgui.TextQuestion("Ñîêðàùåíèå êîìàíäû /usedrugs")
+						imgui.TextQuestion("Сокращение команды /usedrugs")
 						
 					if imgui.ToggleButton('##SKIP_REPORT', skiprep) then end
 						imgui.SameLine()
-						imgui.Text(u8'Àâòî çàêðûòèå îòâåòà íà ðåïîðò(Ðàçðàáîòêà)')
+						imgui.Text(u8'Авто закрытие ответа на репорт(Разработка)')
 						imgui.SameLine()
-						imgui.TextQuestion("Àâòîìàòè÷åñêè çàêðûâàåò îêíî ñ îòâåòîì àäìèíèñòðàòîðà íà Âàø ðåïîðò")
+						imgui.TextQuestion("Автоматически закрывает окно с ответом администратора на Ваш репорт")
 						
 					if imgui.ToggleButton('##INF_RUN', infrun) then end
 						imgui.SameLine()
-						imgui.Text(u8'Áåñêîíå÷íûé áåã')
+						imgui.Text(u8'Бесконечный бег')
 						imgui.SameLine()
-						imgui.TextQuestion("Ñàìûé îáû÷íûé áåñêîíå÷íûé áåã(maybe not working)")
+						imgui.TextQuestion("Самый обычный бесконечный бег(maybe not working)")
 						
 					if imgui.ToggleButton(u8"##DONT_FLOOD", dflood) then end
 						imgui.SameLine()
-						imgui.Text(u8'Óäàëåíèå "Íå ôëóäèòå."')
+						imgui.Text(u8'Удаление "Не флудите."')
 						imgui.SameLine()
-						imgui.TextQuestion('Óäàëÿåò "* Íå ôëóäèòå." èç ÷àòà')
+						imgui.TextQuestion('Удаляет "* Не флудите." из чата')
 						
 					if imgui.ToggleButton(u8"##SCHO", scho) then end
 						imgui.SameLine()
-						imgui.Text(u8"×åêåð îíëàéíà(/scho)")
+						imgui.Text(u8"Чекер онлайна(/scho)")
 						imgui.SameLine()
-						imgui.TextQuestion('Ïîêàçûâàåò îíëàéí íåêîòîðûõ ôðàêöèé')
+						imgui.TextQuestion('Показывает онлайн некоторых фракций')
 						
 					if imgui.ToggleButton(u8"##DEL_GOVNA", delgovna) then end
 						imgui.SameLine()
-						imgui.Text(u8"Óäàëåíèå êèëë-ëèñòà ñåðâåðà")
+						imgui.Text(u8"Удаление килл-листа сервера")
 						imgui.SameLine()
-						imgui.TextQuestion('Óäàëÿåò êèëë-ëèñò ÑàíÒðîïà è íåêîòîðûå ñåðâåðíûå òåêñòäðàâû')
+						imgui.TextQuestion('Удаляет килл-лист СанТропа и некоторые серверные текстдравы')
 					
 				elseif select == 2 then
-					imgui.Text(u8'Êîìàíäà àêòèâàöèè ìåíþ')
+					imgui.Text(u8'Команда активации меню')
 					imgui.SetCursorPos(imgui.ImVec2(162, 31))
 					imgui.PushItemWidth(70)
 					imgui.InputText(u8"##1", settings_command)
 					imgui.PopItemWidth()
 					imgui.SameLine()
-					imgui.TextQuestion('Ìîæåòå óñòàíîâèòü ñâîþ êîìàíäó àêòèâàöèè ìåíþ.\nÊîìàíäà äîëæíà áûòü áåç "/".')
+					imgui.TextQuestion('Можете установить свою команду активации меню.\nКоманда должна быть без "/".')
 					
-					imgui.Text(u8'Âûáåðèòå ñòèëü òåìû')
+					imgui.Text(u8'Выберите стиль темы')
 					imgui.SetCursorPos(imgui.ImVec2(140, 52))
 					imgui.PushItemWidth(135)
 					if imgui.Combo(u8"", style_selected, style_list, style_selected) then
@@ -292,7 +301,7 @@ function imgui.OnDrawFrame()
 			imgui.EndChild()
 			imgui.SetCursorPos(imgui.ImVec2(8, 110))
 			imgui.BeginChild(u8'##3', imgui.ImVec2(150, 58), true)
-				if imgui.Button(u8'Ñîõðàíèòü íàñòðîéêè',  imgui.ImVec2(138, 20)) then 
+				if imgui.Button(u8'Сохранить настройки',  imgui.ImVec2(138, 20)) then 
 				
 					sampUnregisterChatCommand(mainIni.settings.SettingsCommand)
 					
@@ -302,34 +311,34 @@ function imgui.OnDrawFrame()
 					inicfg.save(mainIni, directIni)
 					
 				end
-				if imgui.Button(u8'Ïåðåçàãðóçèòü ñêðèïò', imgui.ImVec2(138, 20)) then
+				if imgui.Button(u8'Перезагрузить скрипт', imgui.ImVec2(138, 20)) then
 					thisScript():reload()
 				end
 			imgui.EndChild()
-			imgui.Text(u8'Îá àâòîðå ñêðèïòà:')
+			imgui.Text(u8'Об авторе скрипта:')
 			imgui.Text('VK: @bebebrrra')
 				if imgui.IsItemClicked(0) then
 					os.execute('explorer "https://vk.com/bebebrrra"')
 					imgui.Process = not main_window_state
 				end
 			imgui.SameLine()
-			imgui.TextQuestion('*Êëèêàáåëüíî.')
+			imgui.TextQuestion('*Кликабельно.')
 			
-			imgui.Text(u8'Ãðóïïà â VK: xarlamsq')
+			imgui.Text(u8'Группа в VK: xarlamsq')
 				if imgui.IsItemClicked(0) then
 					os.execute('explorer "https://vk.com/xarlamsq"')
 					imgui.Process = not main_window_state
 				end
 			imgui.SameLine()
-			imgui.TextQuestion('Ïîäïèøèñü ïæ)')
+			imgui.TextQuestion('Подпишись пж)')
 			
-			imgui.Text(u8'Ïîæåðòâîâàíèÿ')
+			imgui.Text(u8'Пожертвования')
 				if imgui.IsItemClicked(0) then
 					os.execute('explorer "https://vk.me/moneysend/bebebrrra"')
 					imgui.Process = not main_window_state
 				end
 			imgui.SameLine()
-			imgui.TextQuestion('*Êëèêàáåëüíî.')
+			imgui.TextQuestion('*Кликабельно.')
 			
 
         imgui.End()
@@ -377,13 +386,13 @@ end
 --dflood and sbiv anim
 function ev.onServerMessage(color, text)
 	if dflood.v then
-		if text:find('{AA3333}%* {828282}Íå ôëóäèòå%.') then
+		if text:find('{AA3333}%* {828282}Не флудите%.') then
 			return false
 		end
 	end
 	
 	if sbiv.v then
-		if text:find("{4582A1}%* {FFFFFF}Âûêëþ÷èòü àíèìàöèþ ìîæíî êëàâèøåé {4582A1}%'Ïðîáåë%'{FFFFFF}%.") then
+		if text:find("{4582A1}%* {FFFFFF}Выключить анимацию можно клавишей {4582A1}%'Пробел%'{FFFFFF}%.") then
 			lua_thread.create(function() wait(80)
 				setVirtualKeyDown(32, true) wait(1) setVirtualKeyDown(32, false)
 			end)
@@ -487,7 +496,7 @@ function ev.onSendCommand(text)
 		return false
 	end
 end
---ïðîâåðêà íà ñåðâåð
+--проверка на сервер
 function getCurrentServer(name)
 	if name:find('SanTrope RP #1') or name:find('SanTrope RP #2') then return 1 end
 end
