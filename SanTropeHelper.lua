@@ -44,7 +44,7 @@ dflood = imgui.ImBool(mainIni.settings.state_dflood)
 scho = imgui.ImBool(mainIni.settings.state_scho)
 delgovna = imgui.ImBool(mainIni.settings.state_delgovna)
 local style_selected = imgui.ImInt(mainIni.settings.style)
-local style_list = {u8"Тёмно-Оранжевая", u8"Синяя", u8"Тёмная", u8"Вишнёвая", u8"Тёмно-зелёная", u8"Красная", u8"Фиолетовая"}
+local style_list = {u8"Г’ВёГ¬Г­Г®-ГЋГ°Г Г­Г¦ГҐГўГ Гї", u8"Г‘ГЁГ­ГїГї", u8"Г’ВёГ¬Г­Г Гї", u8"Г‚ГЁГёГ­ВёГўГ Гї", u8"Г’ВёГ¬Г­Г®-Г§ГҐГ«ВёГ­Г Гї", u8"ГЉГ°Г Г±Г­Г Гї", u8"Г”ГЁГ®Г«ГҐГІГ®ГўГ Гї"}
 local rkeys = require 'rkeys'
 imgui.HotKey = require('imgui_addons').HotKey
 imgui.ToggleButton = require('imgui_addons').ToggleButton
@@ -62,7 +62,7 @@ local SbivAnimKey = {
 main_window_state = imgui.ImBool(false)
 local select = 1
 
--- авто обнова
+-- Г ГўГІГ® Г®ГЎГ­Г®ГўГ 
 local dlstatus = require('moonloader').download_status
 
 update_state = false
@@ -73,19 +73,19 @@ local script_vers_text = 1.01
 local update_url = 'https://raw.githubusercontent.com/xarlamovl/scripts/main/update.ini'
 local update_path = getWorkingDirectory() .. "/update.ini"
 
-local script_url = 'https://github.com/xarlamovl/scripts/blob/main/SanTropeHelper.lua?raw=true'
+local script_url = 'https://raw.githubusercontent.com/xarlamovl/scripts/main/SanTropeHelper.lua'
 local script_path = thisScript().path
 
 local tag = '{00FFFF}[SanTrope Helper]: {FFFFFF}'
 
 
-function check_update() -- Создаём функцию которая будет проверять наличие обновлений при запуске скрипта.
+function check_update() -- Г‘Г®Г§Г¤Г ВёГ¬ ГґГіГ­ГЄГ¶ГЁГѕ ГЄГ®ГІГ®Г°Г Гї ГЎГіГ¤ГҐГІ ГЇГ°Г®ГўГҐГ°ГїГІГј Г­Г Г«ГЁГ·ГЁГҐ Г®ГЎГ­Г®ГўГ«ГҐГ­ГЁГ© ГЇГ°ГЁ Г§Г ГЇГіГ±ГЄГҐ Г±ГЄГ°ГЁГЇГІГ .
     downloadUrlToFile(update_url, update_path, function(id, status)
         if status == dlstatus.STATUS_ENDDOWNLOADDATA then
             updateIni = inicfg.load(nil, update_path)
-            if tonumber(updateIni.info.vers) > script_vers then -- Сверяем версию в скрипте и в ini файле на github
-                sampAddChatMessage(tag.."Имеется {32CD32}новая {FFFFFF}версия скрипта. Версия: {32CD32}"..updateIni.info.vers_text, -1) -- Сообщаем о новой версии.
-                update_state = true -- если обновление найдено, ставим переменной значение true
+            if tonumber(updateIni.info.vers) > script_vers then -- Г‘ГўГҐГ°ГїГҐГ¬ ГўГҐГ°Г±ГЁГѕ Гў Г±ГЄГ°ГЁГЇГІГҐ ГЁ Гў ini ГґГ Г©Г«ГҐ Г­Г  github
+                sampAddChatMessage(tag.."Г€Г¬ГҐГҐГІГ±Гї {32CD32}Г­Г®ГўГ Гї {FFFFFF}ГўГҐГ°Г±ГЁГї Г±ГЄГ°ГЁГЇГІГ . Г‚ГҐГ°Г±ГЁГї: {32CD32}"..updateIni.info.vers_text, -1) -- Г‘Г®Г®ГЎГ№Г ГҐГ¬ Г® Г­Г®ГўГ®Г© ГўГҐГ°Г±ГЁГЁ.
+                update_state = true -- ГҐГ±Г«ГЁ Г®ГЎГ­Г®ГўГ«ГҐГ­ГЁГҐ Г­Г Г©Г¤ГҐГ­Г®, Г±ГІГ ГўГЁГ¬ ГЇГҐГ°ГҐГ¬ГҐГ­Г­Г®Г© Г§Г­Г Г·ГҐГ­ГЁГҐ true
             end
             os.remove(update_path)
         end
@@ -95,7 +95,7 @@ end
 function main()
     if not isSampLoaded() or not isSampfuncsLoaded() then return end
     while not isSampAvailable() do wait(100) end
-	sampAddChatMessage(tag..'Загружен! Версия: '..thisScript().version..'. Открыть меню: /'..mainIni.settings.settings_command, -1)
+	sampAddChatMessage(tag..'Г‡Г ГЈГ°ГіГ¦ГҐГ­! Г‚ГҐГ°Г±ГЁГї: '..thisScript().version..'. ГЋГІГЄГ°Г»ГІГј Г¬ГҐГ­Гѕ: /'..mainIni.settings.settings_command, -1)
     sampRegisterChatCommand(mainIni.settings.settings_command, cmd_sth)
 	
     _, id = sampGetPlayerIdByCharHandle(PLAYER_PED)
@@ -115,7 +115,7 @@ function main()
 		if update_state then
             downloadUrlToFile(script_url, script_path, function(id, status)
                 if status == dlstatus.STATUS_ENDDOWNLOADDATA then
-                    sampAddChatMessage(tag.."Скрипт {32CD32}успешно {FFFFFF}обновлён.", -1)
+                    sampAddChatMessage(tag.."Г‘ГЄГ°ГЁГЇГІ {32CD32}ГіГ±ГЇГҐГёГ­Г® {FFFFFF}Г®ГЎГ­Г®ГўГ«ВёГ­.", -1)
                 end
             end)
             break
@@ -180,16 +180,16 @@ function imgui.OnDrawFrame()
 		
         imgui.Begin('SanTrope Helper', main_window_state, imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize)
 		
-		imgui.Text(u8(string.format('Текущая дата: %s.', os.date())))
-		imgui.Text(u8'Твой ник: '..nick..'['..id..'].')
+		imgui.Text(u8(string.format('Г’ГҐГЄГіГ№Г Гї Г¤Г ГІГ : %s.', os.date())))
+		imgui.Text(u8'Г’ГўГ®Г© Г­ГЁГЄ: '..nick..'['..id..'].')
 		imgui.SameLine()
-		imgui.Text(u8'Твои координаты: X: '..math.floor(x)..' | Y: '..math.floor(y)..' | Z: '..math.floor(z))
+		imgui.Text(u8'Г’ГўГ®ГЁ ГЄГ®Г®Г°Г¤ГЁГ­Г ГІГ»: X: '..math.floor(x)..' | Y: '..math.floor(y)..' | Z: '..math.floor(z))
 		
 		imgui.BeginChild('##1', imgui.ImVec2(150,45), true)
-            if imgui.Selectable(u8"Меню") then
+            if imgui.Selectable(u8"ГЊГҐГ­Гѕ") then
                 select = 1
             end
-            if imgui.Selectable(u8"Настройки") then
+            if imgui.Selectable(u8"ГЌГ Г±ГІГ°Г®Г©ГЄГЁ") then
                 select = 2 
             end   
        
@@ -199,9 +199,9 @@ function imgui.OnDrawFrame()
 			imgui.BeginChild('##2', imgui.ImVec2(-1, -1), true)
 			
 				if select == 1 then
-					imgui.Text(u8'Меню')
+					imgui.Text(u8'ГЊГҐГ­Гѕ')
 				elseif select == 2 then
-					imgui.Text(u8'Настройки')
+					imgui.Text(u8'ГЌГ Г±ГІГ°Г®Г©ГЄГЁ')
 				end
 				
 				imgui.Separator()
@@ -210,78 +210,78 @@ function imgui.OnDrawFrame()
 				
 					if imgui.ToggleButton(u8'##LOCK_KEY', lock) then end
 						imgui.SameLine()
-						imgui.Text(u8'Закрывать т/с на')
+						imgui.Text(u8'Г‡Г ГЄГ°Г»ГўГ ГІГј ГІ/Г± Г­Г ')
 						imgui.SetCursorPos(imgui.ImVec2(126, 30))
 
 							if imgui.HotKey("##LOCK", LockKey, tLastKeys, 30) then
 								rkeys.changeHotKey(BindLock, LockKey.v)
 							end
 						imgui.SameLine()
-						imgui.TextQuestion('Открывает/Закрывает личный т/с')
+						imgui.TextQuestion('ГЋГІГЄГ°Г»ГўГ ГҐГІ/Г‡Г ГЄГ°Г»ГўГ ГҐГІ Г«ГЁГ·Г­Г»Г© ГІ/Г±')
 					
 					if imgui.ToggleButton("##SBIV_ANIM_KEY", sbiv) then end
 						imgui.SameLine()
-						imgui.Text(u8"Сбив анимации на")
+						imgui.Text(u8"Г‘ГЎГЁГў Г Г­ГЁГ¬Г Г¶ГЁГЁ Г­Г ")
 						imgui.SetCursorPos(imgui.ImVec2(147, 50))
 						
 							if imgui.HotKey("##SBIV_ANIM", SbivAnimKey, tLastKeys, 30) then
 								rkeys.changeHotKey(BindSbiv, SbivAnimKey.v)
 							end
 						imgui.SameLine()
-						imgui.TextQuestion('Сбив анимации через /anim 3')
+						imgui.TextQuestion('Г‘ГЎГЁГў Г Г­ГЁГ¬Г Г¶ГЁГЁ Г·ГҐГ°ГҐГ§ /anim 3')
 					
 					if imgui.ToggleButton('##REPCAR', repcar) then end
 						imgui.SameLine()
-						imgui.Text(u8'Починить т/с (/rc)')
+						imgui.Text(u8'ГЏГ®Г·ГЁГ­ГЁГІГј ГІ/Г± (/rc)')
 						imgui.SameLine()
-						imgui.TextQuestion("Сокращение команды /repairkit")
+						imgui.TextQuestion("Г‘Г®ГЄГ°Г Г№ГҐГ­ГЁГҐ ГЄГ®Г¬Г Г­Г¤Г» /repairkit")
 						
 					if imgui.ToggleButton('##USEDRUG', usedrug) then end
 						imgui.SameLine()
-						imgui.Text(u8'Принятие наркотиков (/us [1-7])')
+						imgui.Text(u8'ГЏГ°ГЁГ­ГїГІГЁГҐ Г­Г Г°ГЄГ®ГІГЁГЄГ®Гў (/us [1-7])')
 						imgui.SameLine()
-						imgui.TextQuestion("Сокращение команды /usedrugs")
+						imgui.TextQuestion("Г‘Г®ГЄГ°Г Г№ГҐГ­ГЁГҐ ГЄГ®Г¬Г Г­Г¤Г» /usedrugs")
 						
 					if imgui.ToggleButton('##SKIP_REPORT', skiprep) then end
 						imgui.SameLine()
-						imgui.Text(u8'Авто закрытие ответа на репорт(Разработка)')
+						imgui.Text(u8'ГЂГўГІГ® Г§Г ГЄГ°Г»ГІГЁГҐ Г®ГІГўГҐГІГ  Г­Г  Г°ГҐГЇГ®Г°ГІ(ГђГ Г§Г°Г ГЎГ®ГІГЄГ )')
 						imgui.SameLine()
-						imgui.TextQuestion("Автоматически закрывает окно с ответом администратора на Ваш репорт")
+						imgui.TextQuestion("ГЂГўГІГ®Г¬Г ГІГЁГ·ГҐГ±ГЄГЁ Г§Г ГЄГ°Г»ГўГ ГҐГІ Г®ГЄГ­Г® Г± Г®ГІГўГҐГІГ®Г¬ Г Г¤Г¬ГЁГ­ГЁГ±ГІГ°Г ГІГ®Г°Г  Г­Г  Г‚Г Гё Г°ГҐГЇГ®Г°ГІ")
 						
 					if imgui.ToggleButton('##INF_RUN', infrun) then end
 						imgui.SameLine()
-						imgui.Text(u8'Бесконечный бег')
+						imgui.Text(u8'ГЃГҐГ±ГЄГ®Г­ГҐГ·Г­Г»Г© ГЎГҐГЈ')
 						imgui.SameLine()
-						imgui.TextQuestion("Самый обычный бесконечный бег(maybe not working)")
+						imgui.TextQuestion("Г‘Г Г¬Г»Г© Г®ГЎГ»Г·Г­Г»Г© ГЎГҐГ±ГЄГ®Г­ГҐГ·Г­Г»Г© ГЎГҐГЈ(maybe not working)")
 						
 					if imgui.ToggleButton(u8"##DONT_FLOOD", dflood) then end
 						imgui.SameLine()
-						imgui.Text(u8'Удаление "Не флудите."')
+						imgui.Text(u8'Г“Г¤Г Г«ГҐГ­ГЁГҐ "ГЌГҐ ГґГ«ГіГ¤ГЁГІГҐ."')
 						imgui.SameLine()
-						imgui.TextQuestion('Удаляет "* Не флудите." из чата')
+						imgui.TextQuestion('Г“Г¤Г Г«ГїГҐГІ "* ГЌГҐ ГґГ«ГіГ¤ГЁГІГҐ." ГЁГ§ Г·Г ГІГ ')
 						
 					if imgui.ToggleButton(u8"##SCHO", scho) then end
 						imgui.SameLine()
-						imgui.Text(u8"Чекер онлайна(/scho)")
+						imgui.Text(u8"Г—ГҐГЄГҐГ° Г®Г­Г«Г Г©Г­Г (/scho)")
 						imgui.SameLine()
-						imgui.TextQuestion('Показывает онлайн некоторых фракций')
+						imgui.TextQuestion('ГЏГ®ГЄГ Г§Г»ГўГ ГҐГІ Г®Г­Г«Г Г©Г­ Г­ГҐГЄГ®ГІГ®Г°Г»Гµ ГґГ°Г ГЄГ¶ГЁГ©')
 						
 					if imgui.ToggleButton(u8"##DEL_GOVNA", delgovna) then end
 						imgui.SameLine()
-						imgui.Text(u8"Удаление килл-листа сервера")
+						imgui.Text(u8"Г“Г¤Г Г«ГҐГ­ГЁГҐ ГЄГЁГ«Г«-Г«ГЁГ±ГІГ  Г±ГҐГ°ГўГҐГ°Г ")
 						imgui.SameLine()
-						imgui.TextQuestion('Удаляет килл-лист СанТропа и некоторые серверные текстдравы')
+						imgui.TextQuestion('Г“Г¤Г Г«ГїГҐГІ ГЄГЁГ«Г«-Г«ГЁГ±ГІ Г‘Г Г­Г’Г°Г®ГЇГ  ГЁ Г­ГҐГЄГ®ГІГ®Г°Г»ГҐ Г±ГҐГ°ГўГҐГ°Г­Г»ГҐ ГІГҐГЄГ±ГІГ¤Г°Г ГўГ»')
 					
 				elseif select == 2 then
-					imgui.Text(u8'Команда активации меню')
+					imgui.Text(u8'ГЉГ®Г¬Г Г­Г¤Г  Г ГЄГІГЁГўГ Г¶ГЁГЁ Г¬ГҐГ­Гѕ')
 					imgui.SetCursorPos(imgui.ImVec2(162, 31))
 					imgui.PushItemWidth(70)
 					imgui.InputText(u8"##1", settings_command)
 					imgui.PopItemWidth()
 					imgui.SameLine()
-					imgui.TextQuestion('Можете установить свою команду активации меню.\nКоманда должна быть без "/".')
+					imgui.TextQuestion('ГЊГ®Г¦ГҐГІГҐ ГіГ±ГІГ Г­Г®ГўГЁГІГј Г±ГўГ®Гѕ ГЄГ®Г¬Г Г­Г¤Гі Г ГЄГІГЁГўГ Г¶ГЁГЁ Г¬ГҐГ­Гѕ.\nГЉГ®Г¬Г Г­Г¤Г  Г¤Г®Г«Г¦Г­Г  ГЎГ»ГІГј ГЎГҐГ§ "/".')
 					
-					imgui.Text(u8'Выберите стиль темы')
+					imgui.Text(u8'Г‚Г»ГЎГҐГ°ГЁГІГҐ Г±ГІГЁГ«Гј ГІГҐГ¬Г»')
 					imgui.SetCursorPos(imgui.ImVec2(140, 52))
 					imgui.PushItemWidth(135)
 					if imgui.Combo(u8"", style_selected, style_list, style_selected) then
@@ -292,7 +292,7 @@ function imgui.OnDrawFrame()
 			imgui.EndChild()
 			imgui.SetCursorPos(imgui.ImVec2(8, 110))
 			imgui.BeginChild(u8'##3', imgui.ImVec2(150, 58), true)
-				if imgui.Button(u8'Сохранить настройки',  imgui.ImVec2(138, 20)) then 
+				if imgui.Button(u8'Г‘Г®ГµГ°Г Г­ГЁГІГј Г­Г Г±ГІГ°Г®Г©ГЄГЁ',  imgui.ImVec2(138, 20)) then 
 				
 					sampUnregisterChatCommand(mainIni.settings.SettingsCommand)
 					
@@ -302,34 +302,34 @@ function imgui.OnDrawFrame()
 					inicfg.save(mainIni, directIni)
 					
 				end
-				if imgui.Button(u8'Перезагрузить скрипт', imgui.ImVec2(138, 20)) then
+				if imgui.Button(u8'ГЏГҐГ°ГҐГ§Г ГЈГ°ГіГ§ГЁГІГј Г±ГЄГ°ГЁГЇГІ', imgui.ImVec2(138, 20)) then
 					thisScript():reload()
 				end
 			imgui.EndChild()
-			imgui.Text(u8'Об авторе скрипта:')
+			imgui.Text(u8'ГЋГЎ Г ГўГІГ®Г°ГҐ Г±ГЄГ°ГЁГЇГІГ :')
 			imgui.Text('VK: @bebebrrra')
 				if imgui.IsItemClicked(0) then
 					os.execute('explorer "https://vk.com/bebebrrra"')
 					imgui.Process = not main_window_state
 				end
 			imgui.SameLine()
-			imgui.TextQuestion('*Кликабельно.')
+			imgui.TextQuestion('*ГЉГ«ГЁГЄГ ГЎГҐГ«ГјГ­Г®.')
 			
-			imgui.Text(u8'Группа в VK: xarlamsq')
+			imgui.Text(u8'ГѓГ°ГіГЇГЇГ  Гў VK: xarlamsq')
 				if imgui.IsItemClicked(0) then
 					os.execute('explorer "https://vk.com/xarlamsq"')
 					imgui.Process = not main_window_state
 				end
 			imgui.SameLine()
-			imgui.TextQuestion('Подпишись пж)')
+			imgui.TextQuestion('ГЏГ®Г¤ГЇГЁГёГЁГ±Гј ГЇГ¦)')
 			
-			imgui.Text(u8'Пожертвования')
+			imgui.Text(u8'ГЏГ®Г¦ГҐГ°ГІГўГ®ГўГ Г­ГЁГї')
 				if imgui.IsItemClicked(0) then
 					os.execute('explorer "https://vk.me/moneysend/bebebrrra"')
 					imgui.Process = not main_window_state
 				end
 			imgui.SameLine()
-			imgui.TextQuestion('*Кликабельно.')
+			imgui.TextQuestion('*ГЉГ«ГЁГЄГ ГЎГҐГ«ГјГ­Г®.')
 			
 
         imgui.End()
@@ -377,13 +377,13 @@ end
 --dflood and sbiv anim
 function ev.onServerMessage(color, text)
 	if dflood.v then
-		if text:find('{AA3333}%* {828282}Не флудите%.') then
+		if text:find('{AA3333}%* {828282}ГЌГҐ ГґГ«ГіГ¤ГЁГІГҐ%.') then
 			return false
 		end
 	end
 	
 	if sbiv.v then
-		if text:find("{4582A1}%* {FFFFFF}Выключить анимацию можно клавишей {4582A1}%'Пробел%'{FFFFFF}%.") then
+		if text:find("{4582A1}%* {FFFFFF}Г‚Г»ГЄГ«ГѕГ·ГЁГІГј Г Г­ГЁГ¬Г Г¶ГЁГѕ Г¬Г®Г¦Г­Г® ГЄГ«Г ГўГЁГёГҐГ© {4582A1}%'ГЏГ°Г®ГЎГҐГ«%'{FFFFFF}%.") then
 			lua_thread.create(function() wait(80)
 				setVirtualKeyDown(32, true) wait(1) setVirtualKeyDown(32, false)
 			end)
@@ -487,7 +487,7 @@ function ev.onSendCommand(text)
 		return false
 	end
 end
---проверка на сервер
+--ГЇГ°Г®ГўГҐГ°ГЄГ  Г­Г  Г±ГҐГ°ГўГҐГ°
 function getCurrentServer(name)
 	if name:find('SanTrope RP #1') or name:find('SanTrope RP #2') then return 1 end
 end
